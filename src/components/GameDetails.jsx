@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useOutletContext } from "react-router";
+import { Link, useParams } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaDollarSign, FaStar, FaMapMarkerAlt, FaCar, FaUser, FaEnvelope, FaCalendarAlt, FaEdit } from 'react-icons/fa';
 import axios from "axios";
@@ -8,7 +8,33 @@ export default function GameDetails() {
   const { id } = useParams();
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { addBooking, user } = useOutletContext();
+  const [bookNow, setBookNow] = useState(false);
+  const handleAddBooking = () => {
+    setBookNow(true)
+    
+  }
+
+  useEffect(() => {
+    if (bookNow && vehicle) {
+      axios.post('http://localhost:3000/bookVehicles', vehicle).then(res => {
+        alert(res.data.message);
+       
+        
+      }).catch(err => {
+        if (err.response) {
+          alert(err.response.data.message)
+        }
+        else {
+          console.log(err);
+        }
+        
+      }).finally(() => {
+        setBookNow(false)
+      })
+    }
+    
+    
+  },[bookNow, vehicle])
 
   useEffect(() => {
     setLoading(true);
@@ -28,11 +54,6 @@ export default function GameDetails() {
 
   const { _id, vehicleName, coverImage, description, owner, userEmail, pricePerDay, category, availability, ratings, location, createdAt } = vehicle;
   const formattedDate = createdAt ? new Date(createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : "N/A";
-  const isOwner = user && user.email === userEmail;
-
-  const handleAddBooking = () => {
-    if (vehicle) addBooking(vehicle);
-  };
 
   const containerVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }, exit: { opacity: 0, y: -20, transition: { duration: 0.4 } } };
   const imageVariants = { hidden: { scale: 1.05, opacity: 0 }, visible: { scale: 1, opacity: 1, transition: { duration: 0.8, ease: "easeOut" } } };
@@ -69,20 +90,31 @@ export default function GameDetails() {
               </div>
             </section>
 
-            {/* --- Buttons Row --- */}
+            {/* Buttons: Book button removed completely */}
             <div className="flex flex-col md:flex-row gap-2 mx-auto justify-center items-center pt-6 border-t border-white/10">
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleAddBooking} disabled={!availability} className={`flex-1 px-8 py-4 rounded-xl shadow-lg font-bold text-lg transition duration-300 ${availability ? 'bg-linear-to-r from-fuchsia-500 to-blue-500 hover:shadow-fuchsia-500/50' : 'bg-gray-600 text-gray-400 cursor-not-allowed'}`}>
-                Book Vehicle Now
-              </motion.button>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex-1"
+              >
+                <button
+                  onClick={handleAddBooking}
+                  className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg 
+               font-bold text-lg bg-green-600 text-white hover:bg-green-700 
+               transition duration-300"
+                >
+                  Book Vehicle Now
+                </button>
+              </motion.div>
 
-              {/* Update Button only visible to owner */}
-              
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
-                  <Link to={`/update/${_id}`} className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg font-bold text-lg border border-yellow-500 text-yellow-400 transition duration-300 bg-yellow-500/10 hover:bg-yellow-500/20">
-                    <FaEdit className="mr-2" /> Update Vehicle
-                  </Link>
-                </motion.div>
-      
+
+
+              {/* Update Button (visible only if you add owner-check later) */}
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
+                <Link to={`/update/${_id}`} className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg font-bold text-lg border border-yellow-500 text-yellow-400 transition duration-300 bg-yellow-500/10 hover:bg-yellow-500/20">
+                  <FaEdit className="mr-2" /> Update Vehicle
+                </Link>
+              </motion.div>
 
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
                 <Link to="/apps" className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg font-bold text-lg border border-white/30 text-white transition duration-300 bg-white/10 hover:bg-white/20">

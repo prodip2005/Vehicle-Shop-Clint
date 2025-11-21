@@ -24,19 +24,7 @@ const Login = () => {
             .catch((err) => setError(err.code || 'Login failed'));
     };
 
-    const handlePasswordReset = async () => {
-        try {
-            if (!emailForReset) {
-                setError('Please enter your email to reset password.');
-                return;
-            }
-            await passReset(emailForReset);
-            alert('Password reset email sent.');
-            setError('');
-        } catch (err) {
-            setError(err.message);
-        }
-    };
+   
 
     const signInWithGoogle = () => {
         setError('');
@@ -77,13 +65,7 @@ const Login = () => {
                                 placeholder="Password"
                             />
 
-                            <button
-                                type="button"
-                                className='text-sm text-blue-600 hover:underline mt-2 mb-4 text-left'
-                                onClick={handlePasswordReset}
-                            >
-                                Forgot Password?
-                            </button>
+                            
 
                             {error && <p className='text-red-600 font-bold text-[15px]'>{error}</p>}
 

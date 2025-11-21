@@ -120,7 +120,7 @@ const Registration = () => {
                                 placeholder="Password"
                             />
 
-                            <Link>Forgot Password?</Link>
+                       
 
                             {/* Error message */}
                             {nameError && (
