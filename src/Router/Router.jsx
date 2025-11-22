@@ -14,6 +14,7 @@ import UpdateProfile from "../Pages/UpdateProfile";
 import AddVahicles from "../Pages/AddVahicles";
 import My_Vehicles from "../components/My_Vehicles";
 import My_Bookings from "../components/My_Bookings"; // ⬅️ বুকিং লিস্ট দেখাবে
+import UpdateVehicle from "../components/UpdateVehicle";
 
 const router = createBrowserRouter([
     {
@@ -85,6 +86,13 @@ const router = createBrowserRouter([
                     <PrivateRoute>
                         <My_Bookings></My_Bookings> 
                     </PrivateRoute>
+            },
+            {
+                path: '/updateVehicle/:id',
+                element:
+                    <PrivateRoute>
+                        <UpdateVehicle></UpdateVehicle>
+                </PrivateRoute>
             },
             {
                 path: "*",

@@ -1,6 +1,8 @@
+import { useParams } from "react-router";
 
 
 export const routeTitles = {
+    
     '/': 'Home - Vehicle Hub',
     '/apps': 'All Vehicles - Vehicle Hub',
     '/login': 'Login to Vehicle Hub',
@@ -13,4 +15,5 @@ export const routeTitles = {
     '/addVehicles': 'Add Vehicles',
     '/myBookings': 'Bookings',
     '/myVehicles': 'My Vehicles',
+    '/updateVehicle/:id':'Update Vehicle'
 };

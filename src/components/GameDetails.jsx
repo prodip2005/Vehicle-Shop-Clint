@@ -14,6 +14,9 @@ export default function GameDetails() {
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
 
+  
+  
+
   useEffect(() => {
     setLoading(true);
     axios.get(`http://localhost:3000/allVehicles/${id}`)
@@ -121,11 +124,6 @@ export default function GameDetails() {
                 </button>
               </motion.div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
-                <Link to={`/update/${_id}`} className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg font-bold text-lg border border-yellow-500 text-yellow-400 transition duration-300 bg-yellow-500/10 hover:bg-yellow-500/20">
-                  <FaEdit className="mr-2" /> Update Vehicle
-                </Link>
-              </motion.div>
 
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
                 <Link to="/apps" className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg font-bold text-lg border border-white/30 text-white transition duration-300 bg-white/10 hover:bg-white/20">

@@ -32,22 +32,26 @@ const Navbar = () => {
                     All Vehicles
                 </NavLink>
             </li>
-            <li>
-                <NavLink className={navItemClass} to="/myBookings" onClick={() => setOpen(false)}>
-                    My Bookings
-                </NavLink>
-            </li>
-            <li>
-                <NavLink className={navItemClass} to="/myVehicles" onClick={() => setOpen(false)}>
-                    My Vehicles
-                </NavLink>
-            </li>
+            {
+                user &&
+                <>
+                    <li>
+                        <NavLink className={navItemClass} to="/myBookings" onClick={() => setOpen(false)}>
+                            My Bookings
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink className={navItemClass} to="/myVehicles" onClick={() => setOpen(false)}>
+                            My Vehicles
+                        </NavLink>
+                    </li>
 
-            <li>
-                <NavLink className={navItemClass} to="/addVehicles" onClick={() => setOpen(false)}>
-                    Add Vehicles
-                </NavLink>
-            </li>
+                    <li>
+                        <NavLink className={navItemClass} to="/addVehicles" onClick={() => setOpen(false)}>
+                            Add Vehicles
+                        </NavLink>
+                    </li></>
+            }
             
             
         </>
