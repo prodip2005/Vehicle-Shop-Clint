@@ -6,15 +6,15 @@ import axios from 'axios';
 
 const Apps = () => {
 
-    const [data,setData]=useState([])
-    
+    const [data, setData] = useState([])
+
     useEffect(() => {
         axios.get('http://localhost:3000/allVehicles')
             .then(res => {
-            console.log('Get all data',res.data);
+                console.log('Get all data', res.data);
                 setData(res.data)
-            
-        })
+
+            })
     }, [])
 
     const [sortType, setSortType] = useState("");
@@ -41,9 +41,20 @@ const Apps = () => {
 
             {/* --- Header and Sorting Controls --- */}
             <header className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12">
-                <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 sm:mb-0">
-                    Explore Our Premium Fleet
+                <h1
+                    className="
+    text-3xl sm:text-5xl font-extrabold 
+    bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 
+    text-transparent bg-clip-text 
+    drop-shadow-[0_4px_10px_rgba(255,255,255,0.3)]
+    tracking-wide
+    animate-pulse
+  "
+                >
+                    Explore Our Premium Fleet: {data.length}
                 </h1>
+
+
 
                 {/* Modern Select Dropdown */}
                 <div className="relative w-full max-w-xs">

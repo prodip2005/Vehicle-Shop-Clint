@@ -1,9 +1,33 @@
 // AddVahicles.jsx
+import axios from 'axios';
 import React from 'react';
 
 const AddVahicles = () => {
 
-    const handleAddVehicle = () => {
+    const handleAddVehicle = (e) => {
+        e.preventDefault();
+        const vehicleName = e.target.vehicleName.value;
+        const owner = e.target.owner.value;
+        const category = e.target.category.value;
+        const pricePerDay = e.target.pricePerDay.value;
+        const location = e.target.location.value;
+        const availability = e.target.availability.value;
+        const description = e.target.description.value;
+        const coverImage = e.target.coverImage.value;
+        const userEmail = e.target.userEmail.value;
+        const createdAt = e.target.createdAt.value;
+        const categories = e.target.category.value;
+        const ratings = e.target.ratings.value;
+
+        const newdata = { vehicleName, owner, category, pricePerDay, location, availability, description, coverImage, userEmail, createdAt, categories, ratings };
+
+        axios.post('http://localhost:3000/allVehicles',newdata).then(res => {
+            console.log('posted all data',res.data);
+            
+        })
+        
+        
+        console.log(vehicleName,owner,category,pricePerDay,location,availability,description,coverImage,userEmail,createdAt,ratings);
         
     }
 
@@ -21,7 +45,7 @@ const AddVahicles = () => {
                 <input type="text" name="coverImage" placeholder="Cover Image URL" className="input input-bordered w-full" />
                 <input type="email" name="userEmail" placeholder="User Email" className="input input-bordered w-full" />
                 <input type="date" name="createdAt" placeholder="Created At" className="input input-bordered w-full" />
-                <input type="text" name="categories" placeholder="Categories" className="input input-bordered w-full" />
+                
                 <input type="number" name="ratings" placeholder="Ratings" className="input input-bordered w-full" />
 
                 <button type="submit" className="btn btn-primary w-full mt-4">Add Vehicle</button>

@@ -104,48 +104,7 @@ const My_Bookings = () => {
                 </table>
             
             }
-            {/* <table className="table w-full">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Owner</th>
-                        <th>Price</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {book.map(vehicle => (
-                        <tr key={vehicle._id}>
-                            <td>
-                                <div className="flex items-center gap-3">
-                                    <div className="avatar">
-                                        <div className="mask mask-squircle h-12 w-12">
-                                            <img
-                                                src={vehicle.coverImage || "https://img.daisyui.com/images/profile/demo/2@94.webp"}
-                                                alt={vehicle.vehicleName}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="font-bold">{vehicle.vehicleName}</div>
-                                        <div className="text-sm opacity-50">{vehicle.location}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>{vehicle.owner}</td>
-                            <td>{vehicle.pricePerDay}</td>
-                            <td>
-                                <button
-                                    onClick={() => handleDelete(vehicle._id)}
-                                    className="btn btn-error text-white btn-xs"
-                                >
-                                    Remove
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table> */}
+          
         </div>
     );
 };
