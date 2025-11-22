@@ -1,27 +1,10 @@
+// My_Book.js
 import React from 'react';
-import axios from 'axios';
 
-const My_Book = ({ vehicle, onDelete }) => {
-
+const My_Book = ({ vehicle }) => {
     const handleDelete = () => {
-        if (!vehicle._id) {
-            alert('Vehicle ID not found!');
-            return;
-        }
 
-        // MongoDB _id স্ট্রিং হিসেবে রিকোয়েস্টে পাঠানো হচ্ছে
-        axios.delete(`http://localhost:3000/bookVehicles/${vehicle._id}`)
-            .then(res => {
-                alert(res.data.message); // Success message
-                onDelete(vehicle._id); // parent component কে update করার জন্য notify
-            })
-            .catch(err => {
-                console.error('Delete Error:', err);
-                alert('Failed to delete vehicle.');
-            });
     }
-
-
     return (
         <tr>
             <td>
@@ -40,15 +23,10 @@ const My_Book = ({ vehicle, onDelete }) => {
                     </div>
                 </div>
             </td>
-            <td>{vehicle.ownerName}</td> {/* ownerName ব্যবহার করা হয়েছে */}
-            <td>${vehicle.pricePerDay}</td>
+            <td>{vehicle.owner}</td>
+            <td>{vehicle.pricePerDay}</td>
             <td>
-                <button
-                    onClick={handleDelete}
-                    className="btn btn-error text-white btn-xs"
-                >
-                    remove
-                </button>
+                <button onClick={handleDelete} className="btn  btn-error text-white btn-xs">remove</button>
             </td>
         </tr>
     );
