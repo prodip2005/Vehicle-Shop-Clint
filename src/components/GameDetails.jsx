@@ -1,40 +1,18 @@
-import React, { useState, useEffect } from "react";
+// GameDetails.jsx
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaDollarSign, FaStar, FaMapMarkerAlt, FaCar, FaUser, FaEnvelope, FaCalendarAlt, FaEdit } from 'react-icons/fa';
 import axios from "axios";
+import { AuthContext } from '../provider/AuthProvider'; // path তোমার প্রকল্প অনুযায়ী ঠিক করো
 
 export default function GameDetails() {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
+
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [bookNow, setBookNow] = useState(false);
-  const handleAddBooking = () => {
-    setBookNow(true)
-    
-  }
-
-  useEffect(() => {
-    if (bookNow && vehicle) {
-      axios.post('http://localhost:3000/bookVehicles', vehicle).then(res => {
-        alert(res.data.message);
-       
-        
-      }).catch(err => {
-        if (err.response) {
-          alert(err.response.data.message)
-        }
-        else {
-          console.log(err);
-        }
-        
-      }).finally(() => {
-        setBookNow(false)
-      })
-    }
-    
-    
-  },[bookNow, vehicle])
+  const [bookingLoading, setBookingLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -44,10 +22,52 @@ export default function GameDetails() {
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
+        console.error('Failed to load vehicle:', err);
+        setVehicle(null);
         setLoading(false);
       });
   }, [id]);
+
+  const handleAddBooking = async () => {
+    if (!user?.email) {
+      alert('অনুগ্রহ করে বুক করার আগে লগইন করুন।');
+      return;
+    }
+    if (!vehicle) {
+      alert('No vehicle data available.');
+      return;
+    }
+
+ 
+    const { _id, ...rest } = vehicle;
+
+
+    const booking = {
+      ...rest,
+  
+      email: user.email,
+      bookedAt: new Date().toISOString()
+    };
+
+    try {
+      setBookingLoading(true);
+      const res = await axios.post('http://localhost:3000/bookVehicles', booking);
+      if (res?.data?.message) {
+        alert(res.data.message);
+      } else {
+        alert('Booking successful');
+      }
+    } catch (err) {
+      console.error('Booking error:', err);
+      if (err.response?.data?.message) {
+        alert(err.response.data.message);
+      } else {
+        alert('Booking failed — console দেখো।');
+      }
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
   if (loading) return <p className="text-center mt-10 text-white">Loading...</p>;
   if (!vehicle) return <p className="text-center mt-10 text-white">Vehicle not found</p>;
@@ -90,26 +110,17 @@ export default function GameDetails() {
               </div>
             </section>
 
-            {/* Buttons: Book button removed completely */}
             <div className="flex flex-col md:flex-row gap-2 mx-auto justify-center items-center pt-6 border-t border-white/10">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex-1"
-              >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
                 <button
                   onClick={handleAddBooking}
-                  className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg 
-               font-bold text-lg bg-green-600 text-white hover:bg-green-700 
-               transition duration-300"
+                  disabled={bookingLoading || !availability}
+                  className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg font-bold text-lg bg-green-600 text-white hover:bg-green-700 transition duration-300 disabled:opacity-50"
                 >
-                  Book Vehicle Now
+                  {bookingLoading ? 'Booking...' : 'Book Vehicle Now'}
                 </button>
               </motion.div>
 
-
-
-              {/* Update Button (visible only if you add owner-check later) */}
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
                 <Link to={`/update/${_id}`} className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg font-bold text-lg border border-yellow-500 text-yellow-400 transition duration-300 bg-yellow-500/10 hover:bg-yellow-500/20">
                   <FaEdit className="mr-2" /> Update Vehicle

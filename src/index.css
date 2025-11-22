@@ -265,3 +265,28 @@ footer a:hover {
 
 
 
+
+
+
+/* CSS (global or module) */
+.booking-chip{
+  width: 9rem; /* ~ w-36 */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0.5rem 0.75rem;
+  border-radius:0.5rem;
+  color:#fff;
+  font-weight:600;
+  box-shadow: 0 8px 20px rgba(31,41,55,0.4);
+  background: linear-gradient(90deg,#06b6d4,#7c3aed,#ef4444);
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease infinite;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

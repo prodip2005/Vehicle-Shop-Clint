@@ -2,8 +2,9 @@
 import React from 'react';
 
 const My_Book = ({ vehicle }) => {
-    const handleDelete = () => {
-
+    
+    const handleDelete = (_id) => {
+        
     }
     return (
         <tr>
@@ -26,7 +27,7 @@ const My_Book = ({ vehicle }) => {
             <td>{vehicle.owner}</td>
             <td>{vehicle.pricePerDay}</td>
             <td>
-                <button onClick={handleDelete} className="btn  btn-error text-white btn-xs">remove</button>
+                <button onClick={()=>handleDelete(vehicle._id)} className="btn  btn-error text-white btn-xs">remove</button>
             </td>
         </tr>
     );
