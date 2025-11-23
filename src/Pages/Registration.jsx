@@ -67,7 +67,7 @@ const Registration = () => {
         setError('');
         googleSignIn()
             .then(() => {
-                navigate(location.state || '/');
+                navigate('/');
             })
             .catch((err) => setError(err.message));
     };

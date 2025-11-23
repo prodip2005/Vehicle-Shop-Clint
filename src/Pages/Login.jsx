@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { AuthContext } from '../provider/AuthProvider';
 import { FcGoogle } from 'react-icons/fc';
 
@@ -7,7 +7,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const [emailForReset, setEmailForReset] = useState('');
     const { signIn, passReset, googleSignIn } = useContext(AuthContext);
-    const location = useLocation();
+
     const navigate = useNavigate();
 
     const handleLogin = (e) => {
@@ -19,7 +19,7 @@ const Login = () => {
         setError('');
         signIn(email, password)
             .then(() => {
-                navigate(location.state || '/');
+                navigate('/');
             })
             .catch((err) => setError(err.code || 'Login failed'));
     };
@@ -30,7 +30,7 @@ const Login = () => {
         setError('');
         googleSignIn()
             .then(() => {
-                navigate(location.state || '/');
+                navigate('/');
             })
             .catch((err) => setError(err.message));
     };
