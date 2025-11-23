@@ -2,23 +2,14 @@ import React from 'react';
 
 const Footer = () => {
     return (
-        <footer className="footer sm:footer-horizontal bg-base-300 text-base-content p-10">
-            <nav>
-                <h6 className="footer-title">Services</h6>
-                <a className="link link-hover">Branding</a>
-                <a className="link link-hover">Design</a>
-                <a className="link link-hover">Marketing</a>
-                <a className="link link-hover">Advertisement</a>
-            </nav>
-            <nav>
-                <h6 className="footer-title">Company</h6>
+        <footer className="footer footer-horizontal footer-center bg-base-200 text-base-content rounded p-10">
+            <nav className="grid grid-flow-col gap-4">
                 <a className="link link-hover">About us</a>
                 <a className="link link-hover">Contact</a>
                 <a className="link link-hover">Jobs</a>
                 <a className="link link-hover">Press kit</a>
             </nav>
             <nav>
-                <h6 className="footer-title">Social</h6>
                 <div className="grid grid-flow-col gap-4">
                     <a>
                         <svg
@@ -30,7 +21,6 @@ const Footer = () => {
                             <path d="M18.244 2H21L14.182 10.07L22 22H15.828L10.963 14.59L5.37 22H2L9.21 13.37L2 2H8.172L12.63 8.82L18.244 2Z" />
                         </svg>
                     </a>
-
                     <a>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +45,11 @@ const Footer = () => {
                     </a>
                 </div>
             </nav>
+            <aside>
+                <p>Copyright © {new Date().getFullYear()} - All right reserved by Vehicle Shop Ltd.</p>
+            </aside>
         </footer>
+       
     );
 };
 

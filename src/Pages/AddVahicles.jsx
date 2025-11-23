@@ -43,11 +43,11 @@ const AddVahicles = () => {
     return (
         <div>
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-6 text-center bg-clip-text text-transparent 
-               bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 drop-shadow-md">
+               bg-linear-to-r from-purple-400 via-pink-500 to-red-500 drop-shadow-md">
                 Add Vehicle
             </h2>
 
-            <div className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md mx-auto mt-10">
+            <div className="w-full max-w-2xl bg-base-200 p-8 rounded-lg shadow-md mx-auto mt-10">
                 <form onSubmit={handleAddVehicle} className="space-y-4">
                     <input type="text" name="vehicleName" placeholder="Vehicle Name" className="input input-bordered w-full" />
                     <input type="text" name="owner" placeholder="Owner" className="input input-bordered w-full" />

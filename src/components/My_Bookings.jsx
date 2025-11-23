@@ -7,8 +7,10 @@ import Swal from 'sweetalert2';
 const My_Bookings = () => {
     const [book, setBook] = useState([]);
     const { user } = useContext(AuthContext);
+    const [loading,setLoading]=useState(false)
 
     useEffect(() => {
+        setLoading(true)
         if (user?.email) {
             axios.get(`http://localhost:3000/bookVehicles?email=${user.email}`)
                 .then(res => {
@@ -16,9 +18,19 @@ const My_Bookings = () => {
                 })
                 .catch(err => {
                     console.error('Failed to fetch bookings:', err);
-                });
+                }).finally(() => {
+                    setLoading(false)
+                })
+        }
+        else {
+            setLoading(false)
         }
     }, [user?.email]);
+    
+    if (loading) {
+        return (<span className="loading loading-ring loading-xl"></span>)
+
+    }
 
 
     const handleDelete = (_id) => {

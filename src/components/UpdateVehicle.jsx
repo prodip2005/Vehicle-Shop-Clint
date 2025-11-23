@@ -58,7 +58,7 @@ const UpdateVehicle = () => {
     return (
 
         
-        <div className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md mx-auto mt-10">
+        <div className="w-full max-w-2xl bg-base-200 p-8 rounded-lg shadow-md mx-auto mt-10">
             <h2 className="text-2xl font-bold mb-6 text-center">Update Vehicle</h2>
             <form onSubmit={handleUpdateVehicle} className="space-y-4">
                 <input  defaultValue={data?.vehicleName} type="text" name="vehicleName" placeholder="Vehicle Name" className="input input-bordered w-full" />

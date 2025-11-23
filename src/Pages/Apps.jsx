@@ -7,15 +7,20 @@ import axios from 'axios';
 const Apps = () => {
 
     const [data, setData] = useState([])
+    const [loading,setLoading]=useState(false)
 
     useEffect(() => {
         axios.get('http://localhost:3000/allVehicles')
             .then(res => {
                 console.log('Get all data', res.data);
+                setLoading(true)
                 setData(res.data)
 
             })
     }, [])
+    if (loading) {
+        <span className="loading loading-ring loading-xl"></span>
+    }
 
     const [sortType, setSortType] = useState("");
 
@@ -33,22 +38,22 @@ const Apps = () => {
         // Sort by Ratings (High to Low)
         if (sortType === "ratings") return b.ratings - a.ratings;
 
-        return 0; // Maintain original order if no sort selected
+        return 0; 
     });
 
     return (
         <div className="container mx-auto px-4 py-8 sm:py-12">
 
-            {/* --- Header and Sorting Controls --- */}
+
             <header className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12">
                 <h1
                     className="
-    text-3xl sm:text-5xl font-extrabold 
-    bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 
-    text-transparent bg-clip-text 
-    drop-shadow-[0_4px_10px_rgba(255,255,255,0.3)]
-    tracking-wide
-    animate-pulse
+                                text-3xl sm:text-5xl font-extrabold 
+                                bg-linear-to-r from-indigo-400 via-purple-500 to-pink-500 
+                                text-transparent bg-clip-text 
+                                drop-shadow-[0_4px_10px_rgba(255,255,255,0.3)]
+                                tracking-wide
+                                animate-pulse
   "
                 >
                     Explore Our Premium Fleet: {data.length}

@@ -8,14 +8,30 @@ import { Link } from 'react-router'; // <-- added only this import
 const My_Vehicles = () => {
     const { user } = use(AuthContext)
     const [data, setdata] = useState([])
+    const [loading,setLoading]=useState(false)
     useEffect(() => {
+        setLoading(true)
         if (user?.email) {
             axios.get(`http://localhost:3000/allVehicles?userEmail=${user.email}`).then(res => {
                 setdata(res.data);
                 console.log(res.data);
+            }).catch(err => {
+                console.log(err);
+                
+            }).finally(() => {
+                setLoading(false)
             })
         }
-    }, [user.email])
+        else {
+            setLoading(false)
+        }
+
+    }, [user?.email])
+
+    if (loading) {
+        return (<span className="loading loading-ring loading-xl"></span>)
+
+    }
 
     const handleDelete = (_id) => {
         Swal.fire({

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaDollarSign, FaStar, FaMapMarkerAlt, FaCar, FaUser, FaEnvelope, FaCalendarAlt, FaEdit } from 'react-icons/fa';
 import axios from "axios";
 import { AuthContext } from '../provider/AuthProvider'; // path তোমার প্রকল্প অনুযায়ী ঠিক করো
+import Swal from "sweetalert2";
 
 export default function GameDetails() {
   const { id } = useParams();
@@ -14,8 +15,8 @@ export default function GameDetails() {
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
 
-  
-  
+
+
 
   useEffect(() => {
     setLoading(true);
@@ -31,46 +32,54 @@ export default function GameDetails() {
       });
   }, [id]);
 
-  const handleAddBooking = async () => {
-    if (!user?.email) {
-      alert('অনুগ্রহ করে বুক করার আগে লগইন করুন।');
-      return;
-    }
-    if (!vehicle) {
-      alert('No vehicle data available.');
-      return;
-    }
+  // inside GameDetails.jsx
+const handleAddBooking = async () => {
+  if (!user?.email) {
+    alert('Please Login First');
+    return;
+  }
+  if (!vehicle) {
+    alert('No vehicle data available.');
+    return;
+  }
 
- 
-    const { _id, ...rest } = vehicle;
-
-
-    const booking = {
-      ...rest,
-  
-      email: user.email,
-      bookedAt: new Date().toISOString()
-    };
-
-    try {
-      setBookingLoading(true);
-      const res = await axios.post('http://localhost:3000/bookVehicles', booking);
-      if (res?.data?.message) {
-        alert(res.data.message);
-      } else {
-        alert('Booking successful');
-      }
-    } catch (err) {
-      console.error('Booking error:', err);
-      if (err.response?.data?.message) {
-        alert(err.response.data.message);
-      } else {
-        alert('Booking failed — console দেখো।');
-      }
-    } finally {
-      setBookingLoading(false);
-    }
+  // নিশ্চিতভাবে vehicle._id পাঠাও
+  const booking = {
+    vehicleId: vehicle._id,   // <-- add this
+    vehicleName: vehicle.vehicleName,
+    owner: vehicle.owner,
+    pricePerDay: vehicle.pricePerDay,
+    location: vehicle.location,
+    coverImage: vehicle.coverImage,
+    // ... অন্য প্রয়োজনীয় ফিল্ডগুলো চাইলে যোগ করো
+    email: user.email,
+    bookedAt: new Date().toISOString()
   };
+
+  try {
+    setBookingLoading(true);
+    const res = await axios.post('http://localhost:3000/bookVehicles', booking);
+    if (res?.data?.message) {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: res.data.message,
+        showConfirmButton: false,
+        timer: 1500
+      });
+    } else {
+      Swal.fire({ icon: 'success', title: 'Booked' });
+    }
+  } catch (err) {
+    console.error('Booking error:', err);
+    // ব্যাকএন্ড থেকে error message দেখাও (যদি পাঠায়)
+    const msg = err.response?.data?.message || 'Booking failed — check console.';
+    Swal.fire({ icon: 'error', title: 'Error', text: msg });
+  } finally {
+    setBookingLoading(false);
+  }
+};
+
 
   if (loading) return <p className="text-center mt-10 text-white">Loading...</p>;
   if (!vehicle) return <p className="text-center mt-10 text-white">Vehicle not found</p>;
