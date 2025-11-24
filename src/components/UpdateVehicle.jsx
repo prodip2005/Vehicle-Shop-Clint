@@ -9,12 +9,12 @@ const UpdateVehicle = () => {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/allVehicles/${id}`)
+        axios.get(`https://vehicle-hub-server-delta.vercel.app/allVehicles/${id}`)
             .then(res => {
                 setData(res.data);
-        })
-    },[id])
-    
+            })
+    }, [id])
+
 
 
     const handleUpdateVehicle = (e) => {
@@ -34,44 +34,44 @@ const UpdateVehicle = () => {
 
         const newdata = { vehicleName, owner, category, pricePerDay, location, availability, description, coverImage, userEmail, createdAt, categories, ratings };
 
-        console.log(newdata );
-        
-        axios.put(`http://localhost:3000/allVehicles/${id}`, newdata).then(res => {
-            console.log(res);
+        // console.log(newdata );
+
+        axios.put(`https://vehicle-hub-server-delta.vercel.app/allVehicles/${id}`, newdata).then(res => {
+            // console.log(res);
             Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: "Information Updated",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-            
+                position: "top-end",
+                icon: "success",
+                title: "Information Updated",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
         })
             .catch(error => {
-            console.log(error);
-            
-        })
+                // console.log(error);
 
-        console.log(vehicleName, owner, category, pricePerDay, location, availability, description, coverImage, userEmail, createdAt, ratings);
+            })
+
+        // console.log(vehicleName, owner, category, pricePerDay, location, availability, description, coverImage, userEmail, createdAt, ratings);
 
     }
     return (
 
-        
+
         <div className="w-full max-w-2xl bg-base-200 p-8 rounded-lg shadow-md mx-auto mt-10">
             <h2 className="text-2xl font-bold mb-6 text-center">Update Vehicle</h2>
             <form onSubmit={handleUpdateVehicle} className="space-y-4">
-                <input  defaultValue={data?.vehicleName} type="text" name="vehicleName" placeholder="Vehicle Name" className="input input-bordered w-full" />
-                <input  defaultValue={data?.owner} type="text" name="owner" placeholder="Owner" className="input input-bordered w-full" />
-                <input  defaultValue={data?.category} type="text" name="category" placeholder="Category" className="input input-bordered w-full" />
-                <input  defaultValue={data?.pricePerDay} type="number" name="pricePerDay" placeholder="Price per Day" className="input input-bordered w-full" />
-                <input  defaultValue={data?.location} type="text" name="location" placeholder="Location" className="input input-bordered w-full" />
-                <input  defaultValue={data?.availability} type="text" name="availability" placeholder="Availability" className="input input-bordered w-full" />
-                <textarea  defaultValue={data?.description} name="description" placeholder="Description" className="textarea textarea-bordered w-full"></textarea>
-                <input  defaultValue={data?.coverImage} type="text" name="coverImage" placeholder="Cover Image URL" className="input input-bordered w-full" />
-                <input readOnly  defaultValue={data?.userEmail} type="email" name="userEmail" placeholder="User Email" className="input  text-gray-500 input-bordered w-full" />
-                <input  defaultValue={data?.createdAt} type="date" name="createdAt" placeholder="Created At" className="input input-bordered w-full" />
-                <input  defaultValue={data?.ratings} type="number" name="ratings" placeholder="Ratings" className="input input-bordered w-full" />
+                <input defaultValue={data?.vehicleName} type="text" name="vehicleName" placeholder="Vehicle Name" className="input input-bordered w-full" />
+                <input defaultValue={data?.owner} type="text" name="owner" placeholder="Owner" className="input input-bordered w-full" />
+                <input defaultValue={data?.category} type="text" name="category" placeholder="Category" className="input input-bordered w-full" />
+                <input defaultValue={data?.pricePerDay} type="number" name="pricePerDay" placeholder="Price per Day" className="input input-bordered w-full" />
+                <input defaultValue={data?.location} type="text" name="location" placeholder="Location" className="input input-bordered w-full" />
+                <input defaultValue={data?.availability} type="text" name="availability" placeholder="Availability" className="input input-bordered w-full" />
+                <textarea defaultValue={data?.description} name="description" placeholder="Description" className="textarea textarea-bordered w-full"></textarea>
+                <input defaultValue={data?.coverImage} type="text" name="coverImage" placeholder="Cover Image URL" className="input input-bordered w-full" />
+                <input readOnly defaultValue={data?.userEmail} type="email" name="userEmail" placeholder="User Email" className="input  text-gray-500 input-bordered w-full" />
+                <input defaultValue={data?.createdAt} type="date" name="createdAt" placeholder="Created At" className="input input-bordered w-full" />
+                <input defaultValue={data?.ratings} type="number" name="ratings" placeholder="Ratings" className="input input-bordered w-full" />
 
                 <button type="submit" className="btn btn-primary w-full mt-4">Update Vehicle</button>
             </form>

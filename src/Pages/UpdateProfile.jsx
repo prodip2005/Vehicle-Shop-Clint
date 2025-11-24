@@ -96,7 +96,7 @@ const UpdateProfile = () => {
                 navigate('/profile');
             }, 1200);
         } catch (error) {
-            console.error('Profile Update Error:', error);
+            // console.error('Profile Update Error:', error);
             setUpdateError(
                 `Update Failed: ${error.message}. You might need to log in again to change your password.`
             );

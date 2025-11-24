@@ -8,16 +8,16 @@ import { Link } from 'react-router'; // <-- added only this import
 const My_Vehicles = () => {
     const { user } = use(AuthContext)
     const [data, setdata] = useState([])
-    const [loading,setLoading]=useState(false)
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         setLoading(true)
         if (user?.email) {
-            axios.get(`http://localhost:3000/allVehicles?userEmail=${user.email}`).then(res => {
+            axios.get(`https://vehicle-hub-server-delta.vercel.app/allVehicles?userEmail=${user.email}`).then(res => {
                 setdata(res.data);
-                console.log(res.data);
+                // console.log(res.data);
             }).catch(err => {
-                console.log(err);
-                
+                // console.log(err);
+
             }).finally(() => {
                 setLoading(false)
             })
@@ -44,7 +44,7 @@ const My_Vehicles = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:3000/allVehicles/${_id}`)
+                axios.delete(`https://vehicle-hub-server-delta.vercel.app/allVehicles/${_id}`)
                     .then(() => {
                         Swal.fire({
                             title: "Deleted!",
@@ -55,7 +55,7 @@ const My_Vehicles = () => {
                         setdata(prev => prev.filter(b => b._id !== _id));
                     })
                     .catch(err => {
-                        console.error('Delete failed:', err);
+                        // console.error('Delete failed:', err);
                         Swal.fire({
                             title: "Error!",
                             text: "Failed to delete vehicle.",

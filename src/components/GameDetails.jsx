@@ -20,65 +20,65 @@ export default function GameDetails() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`http://localhost:3000/allVehicles/${id}`)
+    axios.get(`https://vehicle-hub-server-delta.vercel.app/allVehicles/${id}`)
       .then(res => {
         setVehicle(res.data);
         setLoading(false);
       })
       .catch(err => {
-        console.error('Failed to load vehicle:', err);
+        // console.error('Failed to load vehicle:', err);
         setVehicle(null);
         setLoading(false);
       });
   }, [id]);
 
   // inside GameDetails.jsx
-const handleAddBooking = async () => {
-  if (!user?.email) {
-    alert('Please Login First');
-    return;
-  }
-  if (!vehicle) {
-    alert('No vehicle data available.');
-    return;
-  }
-
-  // নিশ্চিতভাবে vehicle._id পাঠাও
-  const booking = {
-    vehicleId: vehicle._id,   // <-- add this
-    vehicleName: vehicle.vehicleName,
-    owner: vehicle.owner,
-    pricePerDay: vehicle.pricePerDay,
-    location: vehicle.location,
-    coverImage: vehicle.coverImage,
-    // ... অন্য প্রয়োজনীয় ফিল্ডগুলো চাইলে যোগ করো
-    email: user.email,
-    bookedAt: new Date().toISOString()
-  };
-
-  try {
-    setBookingLoading(true);
-    const res = await axios.post('http://localhost:3000/bookVehicles', booking);
-    if (res?.data?.message) {
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: res.data.message,
-        showConfirmButton: false,
-        timer: 1500
-      });
-    } else {
-      Swal.fire({ icon: 'success', title: 'Booked' });
+  const handleAddBooking = async () => {
+    if (!user?.email) {
+      alert('Please Login First');
+      return;
     }
-  } catch (err) {
-    console.error('Booking error:', err);
-    // ব্যাকএন্ড থেকে error message দেখাও (যদি পাঠায়)
-    const msg = err.response?.data?.message || 'Booking failed — check console.';
-    Swal.fire({ icon: 'error', title: 'Error', text: msg });
-  } finally {
-    setBookingLoading(false);
-  }
-};
+    if (!vehicle) {
+      alert('No vehicle data available.');
+      return;
+    }
+
+    // নিশ্চিতভাবে vehicle._id পাঠাও
+    const booking = {
+      vehicleId: vehicle._id,   // <-- add this
+      vehicleName: vehicle.vehicleName,
+      owner: vehicle.owner,
+      pricePerDay: vehicle.pricePerDay,
+      location: vehicle.location,
+      coverImage: vehicle.coverImage,
+      // ... অন্য প্রয়োজনীয় ফিল্ডগুলো চাইলে যোগ করো
+      email: user.email,
+      bookedAt: new Date().toISOString()
+    };
+
+    try {
+      setBookingLoading(true);
+      const res = await axios.post('https://vehicle-hub-server-delta.vercel.app/bookVehicles', booking);
+      if (res?.data?.message) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: res.data.message,
+          showConfirmButton: false,
+          timer: 1500
+        });
+      } else {
+        Swal.fire({ icon: 'success', title: 'Booked' });
+      }
+    } catch (err) {
+      // console.error('Booking error:', err);
+      // ব্যাকএন্ড থেকে error message দেখাও (যদি পাঠায়)
+      const msg = err.response?.data?.message || 'Booking failed — check console.';
+      Swal.fire({ icon: 'error', title: 'Error', text: msg });
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
 
   if (loading) return <p className="text-center mt-10 text-white">Loading...</p>;

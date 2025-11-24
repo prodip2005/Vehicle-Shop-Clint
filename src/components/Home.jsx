@@ -9,14 +9,14 @@ const Home = () => {
     // const data = useLoaderData()
     const [data, setData] = useState([]);
     useEffect(() => {
-        axios.get('http://localhost:3000/allVehicles')
+        axios.get('https://vehicle-hub-server-delta.vercel.app/allVehicles')
             .then(res => {
-                console.log('Get all data', res.data);
+                // console.log('Get all data', res.data);
                 setData(res.data)
 
             })
     }, [])
-    
+
     return (
         <div>
             <Banner />

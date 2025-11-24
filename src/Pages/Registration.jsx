@@ -54,7 +54,7 @@ const Registration = () => {
                         navigate('/');
                     })
                     .catch((error) => {
-                        console.error(error);
+                        // console.error(error);
                         setUser(user);
                     });
             })

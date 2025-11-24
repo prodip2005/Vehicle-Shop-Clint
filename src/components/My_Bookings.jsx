@@ -7,17 +7,17 @@ import Swal from 'sweetalert2';
 const My_Bookings = () => {
     const [book, setBook] = useState([]);
     const { user } = useContext(AuthContext);
-    const [loading,setLoading]=useState(false)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         setLoading(true)
         if (user?.email) {
-            axios.get(`http://localhost:3000/bookVehicles?email=${user.email}`)
+            axios.get(`https://vehicle-hub-server-delta.vercel.app/bookVehicles?email=${user.email}`)
                 .then(res => {
                     setBook(res.data || []);
                 })
                 .catch(err => {
-                    console.error('Failed to fetch bookings:', err);
+                    // console.error('Failed to fetch bookings:', err);
                 }).finally(() => {
                     setLoading(false)
                 })
@@ -26,7 +26,7 @@ const My_Bookings = () => {
             setLoading(false)
         }
     }, [user?.email]);
-    
+
     if (loading) {
         return (<span className="loading loading-ring loading-xl"></span>)
 
@@ -44,7 +44,7 @@ const My_Bookings = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:3000/bookVehicles/${_id}`)
+                axios.delete(`https://vehicle-hub-server-delta.vercel.app/bookVehicles/${_id}`)
                     .then(() => {
                         Swal.fire({
                             title: "Deleted!",
@@ -55,7 +55,7 @@ const My_Bookings = () => {
                         setBook(prev => prev.filter(b => b._id !== _id));
                     })
                     .catch(err => {
-                        console.error('Delete failed:', err);
+                        // console.error('Delete failed:', err);
                         Swal.fire({
                             title: "Error!",
                             text: "Failed to delete booking.",
@@ -114,9 +114,9 @@ const My_Bookings = () => {
                         ))}
                     </tbody>
                 </table>
-            
+
             }
-          
+
         </div>
     );
 };

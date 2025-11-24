@@ -7,15 +7,19 @@ import axios from 'axios';
 const Apps = () => {
 
     const [data, setData] = useState([])
-    const [loading,setLoading]=useState(false)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        axios.get('http://localhost:3000/allVehicles')
+        setLoading(true)
+        axios.get('https://vehicle-hub-server-delta.vercel.app/allVehicles')
             .then(res => {
-                console.log('Get all data', res.data);
-                setLoading(true)
+                // console.log('Get all data', res.data);
                 setData(res.data)
 
+            }).catch(error => {
+
+            }).finally(() => {
+                setLoading(false)
             })
     }, [])
     if (loading) {
@@ -38,7 +42,7 @@ const Apps = () => {
         // Sort by Ratings (High to Low)
         if (sortType === "ratings") return b.ratings - a.ratings;
 
-        return 0; 
+        return 0;
     });
 
     return (

@@ -29,8 +29,11 @@ const Login = () => {
     const signInWithGoogle = () => {
         setError('');
         googleSignIn()
-            .then(() => {
+            .then((data) => {
                 navigate('/');
+                // console.log(data);
+                
+                
             })
             .catch((err) => setError(err.message));
     };
