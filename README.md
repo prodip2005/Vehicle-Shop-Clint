@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="https://i.ibb.co.com/1GZntqj4/Screenshot-From-2026-01-01-13-32-09.png" alt="Vehicle Shop Preview" width="100%" style="border-radius: 10px; border: 1px solid #444;">
+  <img src="https://i.ibb.co.com/1GZntqj4/Screenshot-From-2026-01-01-13-32-09.png" alt="Vehicle Shop Preview" width="100%" height="100%" style="border-radius: 10px; border: 1px solid #444;">
 </p>
 
 ---
