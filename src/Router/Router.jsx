@@ -15,6 +15,7 @@ import AddVahicles from "../Pages/AddVahicles";
 import My_Vehicles from "../components/My_Vehicles";
 import My_Bookings from "../components/My_Bookings"; // ⬅️ বুকিং লিস্ট দেখাবে
 import UpdateVehicle from "../components/UpdateVehicle";
+import Dashboard from "../Pages/Dashboard/Dashboard";
 
 const router = createBrowserRouter([
     {
@@ -42,14 +43,6 @@ const router = createBrowserRouter([
             },
 
             {
-                path: "/addVehicles",
-                element: (
-                    <PrivateRoute>
-                        <AddVahicles></AddVahicles> 
-                    </PrivateRoute>
-                )
-            },
-            {
                 path: "/login",
                 Component: Login,
             },
@@ -73,32 +66,52 @@ const router = createBrowserRouter([
                     </PrivateRoute>
                 ),
             },
+         
+           
             {
-                path: '/myVehicles',
+                path: "*",
+                Component: ErrorPage,
+            },
+        ],
+
+    },
+    {
+        path: 'dashboard',
+        element: <PrivateRoute>
+            <Dashboard></Dashboard>
+        </PrivateRoute>,
+        children: [
+            {
+                path: 'myVehicles',
                 element:
                     <PrivateRoute>
                         <My_Vehicles></My_Vehicles>
                     </PrivateRoute>
             },
             {
-                path: '/myBookings',
+                path: 'myBookings',
                 element:
                     <PrivateRoute>
-                        <My_Bookings></My_Bookings> 
+                        <My_Bookings></My_Bookings>
                     </PrivateRoute>
             },
+
             {
-                path: '/updateVehicle/:id',
+                path: "addVehicles",
+                element: (
+                    <PrivateRoute>
+                        <AddVahicles></AddVahicles>
+                    </PrivateRoute>
+                )
+            },
+            {
+                path: 'updateVehicle/:id',
                 element:
                     <PrivateRoute>
                         <UpdateVehicle></UpdateVehicle>
-                </PrivateRoute>
+                    </PrivateRoute>
             },
-            {
-                path: "*",
-                Component: ErrorPage,
-            },
-        ],
-    },
+        ]
+    }
 ]);
 export default router;

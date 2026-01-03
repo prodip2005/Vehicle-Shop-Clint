@@ -1,205 +1,100 @@
-import React, { useContext, useState } from "react";
-import { Link, NavLink } from "react-router"; 
-import { FiAperture, FiChevronDown } from "react-icons/fi"; 
-import logo from "../assets//Gemini_Generated_Image_hvv2x1hvv2x1hvv2.png";
+import React, { useContext, useState, useEffect } from "react";
+import { Link, NavLink } from "react-router";
+import { FiChevronDown, FiLogOut, FiUser, FiMenu, FiX, FiGrid, FiSun, FiMoon, FiHome, FiTruck } from "react-icons/fi";
 import { AuthContext } from "../provider/AuthProvider";
+import { ThemeContext } from "../provider/ThemeProvider";
+import logo from "../assets/Gemini_Generated_Image_hvv2x1hvv2x1hvv2.png";
 
 const Navbar = () => {
     const { user, logOut } = useContext(AuthContext);
-    const [open, setOpen] = useState(false);
+    const { theme, toggleTheme } = useContext(ThemeContext);
+    const [open, setOpen] = useState(false); // মোবাইলের জন্য স্টেট
+    const [scrolled, setScrolled] = useState(false);
 
-    const handleLogOut = () => {
-        logOut()
-            .then(() => alert("Log Out Successfully"))
-            .catch((err) => alert(err?.message || "Logout failed"));
-    };
+    useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 30);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
-    const navItemClass = ({ isActive }) =>
-        [
-            "btn rounded-3xl w-[120px] justify-center",
-            isActive ? "btn-primary text-white" : "btn-ghost",
-        ].join(" ");
-
-    const list = (
+    // রুটগুলোর জন্য কমন কম্পোনেন্ট
+    const navLinks = (
         <>
             <li>
-                <NavLink className={navItemClass} to="/" onClick={() => setOpen(false)}>
-                    Home
+                <NavLink to="/" className={({ isActive }) => `flex items-center gap-2 px-6 py-2 rounded-full font-bold uppercase text-[11px] tracking-widest transition-all ${isActive ? 'bg-primary text-primary-content shadow-lg shadow-primary/20' : 'hover:text-primary opacity-70 hover:opacity-100'}`}>
+                    <FiHome size={14} /> Home
                 </NavLink>
             </li>
             <li>
-                <NavLink className={navItemClass} to="/apps" onClick={() => setOpen(false)}>
-                    All Vehicles
+                <NavLink to="/apps" className={({ isActive }) => `flex items-center gap-2 px-6 py-2 rounded-full font-bold uppercase text-[11px] tracking-widest transition-all ${isActive ? 'bg-primary text-primary-content shadow-lg shadow-primary/20' : 'hover:text-primary opacity-70 hover:opacity-100'}`}>
+                    <FiTruck size={14} /> All Vehicles
                 </NavLink>
             </li>
-            {
-                user &&
-                <>
-                    <li>
-                        <NavLink className={navItemClass} to="/myBookings" onClick={() => setOpen(false)}>
-                            My Bookings
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink className={navItemClass} to="/myVehicles" onClick={() => setOpen(false)}>
-                            My Vehicles
-                        </NavLink>
-                    </li>
-
-                    <li>
-                        <NavLink className={navItemClass} to="/addVehicles" onClick={() => setOpen(false)}>
-                            Add Vehicles
-                        </NavLink>
-                    </li></>
-            }
-            
-            
+            {/* আপনার প্রয়োজন অনুযায়ী আরও লিঙ্ক যোগ করতে পারেন */}
         </>
     );
 
     return (
-        <header className="bg-base-100 w-full shadow-sm sticky top-0 z-50">
-            <nav className="navbar max-w-[1700px] mx-auto">
-                {/* START */}
+        <header className="fixed top-0 left-0 w-full z-[100] pt-5 px-4 sm:px-10">
+            <nav className={`navbar max-w-[1600px] mx-auto rounded-[3rem] transition-all duration-500 border border-base-content/10 px-6 ${scrolled ? "bg-base-100/80 backdrop-blur-2xl shadow-2xl" : "bg-base-100/20 backdrop-blur-md"}`}>
+
                 <div className="navbar-start">
-                    <button
-                        className="btn btn-ghost lg:hidden mr-1"
-                        aria-label="Open menu"
-                        aria-expanded={open ? "true" : "false"}
-                        onClick={() => setOpen((p) => !p)}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                            className="lucide lucide-menu">
-                            <line x1="4" x2="20" y1="12" y2="12" />
-                            <line x1="4" x2="20" y1="6" y2="6" />
-                            <line x1="4" x2="20" y1="18" y2="18" />
-                        </svg>
-                    </button>
+                    {/* Mobile Menu Button */}
+                    <div className="dropdown lg:hidden">
+                        <button onClick={() => setOpen(!open)} className="btn btn-ghost btn-circle">
+                            <FiMenu size={24} />
+                        </button>
+                        {open && (
+                            <ul className="menu menu-sm dropdown-content mt-5 z-[1] p-6 shadow-2xl bg-base-100 rounded-[2rem] w-64 border border-base-content/10 space-y-3">
+                                {navLinks}
+                            </ul>
+                        )}
+                    </div>
 
                     <Link to="/" className="flex items-center gap-2">
-                        <img className="md:w-24 w-12 rounded-full" src={logo} alt="GameHub logo" />
-                        <span className="hidden sm:inline font-extrabold text-lg">Vehicle Hub</span>
+                        <img className="w-10 h-10 rounded-full border-2 border-accent" src={logo} alt="logo" />
+                        <span className="text-xl font-black uppercase hidden sm:inline-block text-base-content">Vehicle<span className="text-primary italic">Hub</span></span>
                     </Link>
                 </div>
 
+                {/* --- Desktop Routes (Navbar Center) --- */}
                 <div className="navbar-center hidden lg:flex">
-                    <ul className="menu menu-horizontal px-1 gap-2">{list}</ul>
+                    <ul className="flex items-center gap-2 bg-base-content/5 p-1.5 rounded-full border border-base-content/5">
+                        {navLinks}
+                    </ul>
                 </div>
 
-                <div className="navbar-end">
-                    <div className="dropdown dropdown-end mr-2">
-                        <div tabIndex={0} role="button" className="btn btn-ghost">
-                            <FiAperture className="text-xl" />
-                            <span className="hidden sm:inline">Theme</span>
-                            <FiChevronDown className="opacity-60" />
+                <div className="navbar-end gap-3">
+                    {/* Theme Toggle Button */}
+                    <button onClick={toggleTheme} className="btn btn-ghost btn-circle bg-base-200 text-primary border border-base-content/10 hover:bg-primary hover:text-white transition-all">
+                        {theme === 'light' ? <FiMoon size={22} /> : <FiSun size={22} />}
+                    </button>
+
+                    {user && (
+                        <NavLink to="/dashboard" className="hidden md:flex items-center gap-2 px-6 py-2.5 rounded-full font-black text-xs uppercase bg-secondary/10 text-secondary border border-secondary/20 hover:bg-secondary hover:text-white transition-all">
+                            <FiGrid /> Dashboard
+                        </NavLink>
+                    )}
+
+                    {user ? (
+                        <div className="dropdown dropdown-end">
+                            <div tabIndex={0} role="button" className="p-1 pr-3 bg-base-200/50 rounded-full border border-base-content/10 flex items-center gap-2 hover:border-primary transition-all">
+                                <img className="w-10 h-10 rounded-full border-2 border-primary object-cover" src={user?.photoURL} alt="u" />
+                                <FiChevronDown className="opacity-60 hidden md:block text-base-content" />
+                            </div>
+                            <ul tabIndex={0} className="dropdown-content mt-5 p-4 shadow-2xl bg-base-100 border border-base-content/10 rounded-[2.5rem] w-64 z-[110]">
+                                <li><Link to="/profile" className="flex items-center gap-3 p-4 rounded-2xl hover:bg-primary/10 hover:text-primary font-bold text-base-content"><FiUser /> Profile</Link></li>
+                                <li className="mt-2 pt-2 border-t border-base-content/10">
+                                    <button onClick={logOut} className="flex items-center gap-3 w-full p-4 rounded-2xl bg-error/10 text-error font-bold hover:bg-error hover:text-white transition-all"><FiLogOut /> Logout</button>
+                                </li>
+                            </ul>
                         </div>
-
-                        <ul
-                            tabIndex={0}
-                            className="dropdown-content bg-base-300 rounded-box z-[60] w-56 p-2 shadow-2xl"
-                        >
-                            <li>
-                                <input
-                                    type="radio"
-                                    name="theme-dropdown"
-                                    className="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
-                                    aria-label="Default"
-                                    value="default"
-                                />
-                            </li>
-                            <li>
-                                <input
-                                    type="radio"
-                                    name="theme-dropdown"
-                                    className="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
-                                    aria-label="Retro"
-                                    value="retro"
-                                />
-                            </li>
-                            <li>
-                                <input
-                                    type="radio"
-                                    name="theme-dropdown"
-                                    className="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
-                                    aria-label="Cyberpunk"
-                                    value="cyberpunk"
-                                />
-                            </li>
-                            <li>
-                                <input
-                                    type="radio"
-                                    name="theme-dropdown"
-                                    className="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
-                                    aria-label="Valentine"
-                                    value="valentine"
-                                />
-                            </li>
-                            <li>
-                                <input
-                                    type="radio"
-                                    name="theme-dropdown"
-                                    className="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
-                                    aria-label="Aqua"
-                                    value="aqua"
-                                />
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div className="flex justify-center items-center gap-3">
-                        <Link to="/profile" className="flex items-center">
-                            <img
-                                className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
-                                src={
-                                    user?.photoURL ||
-                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9duKEBYAVzHQ9eUWKW84UCOCo2E1c-b3yAA&s"
-                                }
-                                alt={user?.displayName || "avatar"}
-                                referrerPolicy="no-referrer"
-                            />
-                        </Link>
-
-                        {user && (
-                            <Link to="/profile">
-                                <div className="hidden sm:flex border text-white font-black btn btn-secondary rounded-3xl">
-                                    {user.displayName}
-                                </div>
-                            </Link>
-                        )}
-
-                        {user ? (
-                            <button
-                                onClick={handleLogOut}
-                                className="btn bg-red-700 text-white font-semibold rounded-3xl"
-                            >
-                                LogOut
-                            </button>
-                        ) : (
-                            <Link to="/login" className="btn bg-red-700 text-white font-semibold rounded-3xl">
-                                Login / Registration
-                            </Link>
-                        )}
-                    </div>
+                    ) : (
+                        <Link to="/login"><button className="btn btn-primary rounded-full px-8 font-black uppercase shadow-lg shadow-primary/20">Login</button></Link>
+                    )}
                 </div>
             </nav>
-
-            <div
-                className={`lg:hidden transition-[max-height] duration-300 overflow-hidden ${open ? "max-h-96" : "max-h-0"
-                    }`}
-            >
-                <ul className="menu bg-base-100 px-4 py-3 space-y-2">{list}</ul>
-
-                {user && (
-                    <div className="px-4 pb-4">
-                        <Link to="/profile" onClick={() => setOpen(false)}>
-                            <div className="w-full btn btn-secondary rounded-3xl">{user.displayName}</div>
-                        </Link>
-                    </div>
-                )}
-            </div>
         </header>
     );
 };
-
 export default Navbar;

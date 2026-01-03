@@ -1,22 +1,21 @@
-// GameDetails.jsx
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaDollarSign, FaStar, FaMapMarkerAlt, FaCar, FaUser, FaEnvelope, FaCalendarAlt, FaEdit } from 'react-icons/fa';
+import {
+  FiMapPin, FiStar, FiTruck, FiUser, FiMail,
+  FiCalendar, FiArrowLeft, FiCheckCircle, FiXCircle, FiZap, FiSettings, FiShield
+} from 'react-icons/fi'; // এখানে FiShield যোগ করা হয়েছে
 import axios from "axios";
-import { AuthContext } from '../provider/AuthProvider'; // path তোমার প্রকল্প অনুযায়ী ঠিক করো
+import { AuthContext } from '../provider/AuthProvider';
 import Swal from "sweetalert2";
 
 export default function GameDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
-
-
-
 
   useEffect(() => {
     setLoading(true);
@@ -25,135 +24,186 @@ export default function GameDetails() {
         setVehicle(res.data);
         setLoading(false);
       })
-      .catch(err => {
-        // console.error('Failed to load vehicle:', err);
+      .catch(() => {
         setVehicle(null);
         setLoading(false);
       });
   }, [id]);
 
-  // inside GameDetails.jsx
   const handleAddBooking = async () => {
     if (!user?.email) {
-      alert('Please Login First');
-      return;
-    }
-    if (!vehicle) {
-      alert('No vehicle data available.');
+      Swal.fire({
+        title: 'AUTHENTICATION',
+        text: 'Access restricted. Please log in to proceed.',
+        icon: 'info',
+        confirmButtonText: 'LOG IN',
+        confirmButtonColor: 'oklch(var(--p))',
+        background: 'oklch(var(--b1))',
+        color: 'oklch(var(--bc))',
+        customClass: { popup: 'rounded-none border-t-4 border-primary' }
+      });
       return;
     }
 
-    // নিশ্চিতভাবে vehicle._id পাঠাও
     const booking = {
-      vehicleId: vehicle._id,   // <-- add this
-      vehicleName: vehicle.vehicleName,
-      owner: vehicle.owner,
-      pricePerDay: vehicle.pricePerDay,
-      location: vehicle.location,
-      coverImage: vehicle.coverImage,
-      // ... অন্য প্রয়োজনীয় ফিল্ডগুলো চাইলে যোগ করো
-      email: user.email,
-      bookedAt: new Date().toISOString()
+      vehicleId: vehicle._id, vehicleName: vehicle.vehicleName,
+      owner: vehicle.owner, pricePerDay: vehicle.pricePerDay,
+      location: vehicle.location, coverImage: vehicle.coverImage,
+      email: user.email, bookedAt: new Date().toISOString()
     };
 
     try {
       setBookingLoading(true);
-      const res = await axios.post('https://vehicle-hub-server-delta.vercel.app/bookVehicles', booking);
-      if (res?.data?.message) {
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: res.data.message,
-          showConfirmButton: false,
-          timer: 1500
-        });
-      } else {
-        Swal.fire({ icon: 'success', title: 'Booked' });
-      }
+      await axios.post('https://vehicle-hub-server-delta.vercel.app/bookVehicles', booking);
+
+      Swal.fire({
+        title: '<span style="font-weight: 900; letter-spacing: 2px;">CONFIRMED</span>',
+        html: `<p style="opacity: 0.7;">${vehicle.vehicleName} is now under your command.</p>`,
+        icon: 'success',
+        confirmButtonText: 'Done',
+        confirmButtonColor: 'oklch(var(--p))',
+        background: 'oklch(var(--b2))',
+        color: 'oklch(var(--bc))',
+        customClass: {
+          popup: 'rounded-xl border border-base-content/10',
+          confirmButton: 'rounded-lg px-8 py-3 font-bold'
+        }
+      })
     } catch (err) {
-      // console.error('Booking error:', err);
-      // ব্যাকএন্ড থেকে error message দেখাও (যদি পাঠায়)
-      const msg = err.response?.data?.message || 'Booking failed — check console.';
-      Swal.fire({ icon: 'error', title: 'Error', text: msg });
+      Swal.fire({ icon: 'error', title: 'DENIED', text: 'Engine failure. Try again.' });
     } finally {
       setBookingLoading(false);
     }
   };
 
+  if (loading) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-base-100">
+      <div className="w-16 h-1 bg-primary animate-pulse"></div>
+      <p className="mt-4 font-black tracking-[1em] text-[10px] text-primary">INITIALIZING</p>
+    </div>
+  );
 
-  if (loading) return <p className="text-center mt-10 text-white">Loading...</p>;
-  if (!vehicle) return <p className="text-center mt-10 text-white">Vehicle not found</p>;
+  if (!vehicle) return <p className="text-center mt-20 text-error font-black uppercase">Unit Not Found</p>;
 
-  const { _id, vehicleName, coverImage, description, owner, userEmail, pricePerDay, category, availability, ratings, location, createdAt } = vehicle;
-  const formattedDate = createdAt ? new Date(createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : "N/A";
-
-  const containerVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }, exit: { opacity: 0, y: -20, transition: { duration: 0.4 } } };
-  const imageVariants = { hidden: { scale: 1.05, opacity: 0 }, visible: { scale: 1, opacity: 1, transition: { duration: 0.8, ease: "easeOut" } } };
+  const { vehicleName, coverImage, description, owner, userEmail, pricePerDay, category, availability, ratings, location } = vehicle;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white px-4 md:px-12 py-12">
-      <AnimatePresence mode="wait">
-        <motion.div key={_id} variants={containerVariants} initial="hidden" animate="visible" exit="exit" className="max-w-6xl mx-auto bg-gray-800 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md border border-white/10">
-          <motion.img variants={imageVariants} initial="hidden" animate="visible" src={coverImage} alt={vehicleName} className="w-full h-80 md:h-[500px] object-cover rounded-t-3xl shadow-lg" />
+    <div className="min-h-screen bg-base-100 text-base-content font-['Outfit']">
 
-          <div className="p-6 md:p-10 space-y-8">
-            <header className="border-b border-white/10 pb-4">
-              <div className="flex justify-between items-start">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-white">{vehicleName}</h1>
-                <span className="flex items-center text-xl font-bold text-yellow-400 bg-gray-700/50 px-4 py-2 rounded-full shadow-inner">
-                  <FaStar className="mr-2" /> {ratings}
-                </span>
+      {/* Top Nav */}
+      <nav className="border-b border-base-content/5 py-6">
+        <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center">
+          <Link to="/apps" className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.3em] hover:text-primary transition-colors">
+            <FiArrowLeft /> Return to Fleet
+          </Link>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              {/* কালার ২: Secondary Status Dot */}
+              <div className={`w-2 h-2 rounded-full ${availability ? 'bg-secondary shadow-[0_0_10px_oklch(var(--s))]' : 'bg-error'} animate-pulse`} />
+              <span className="text-[10px] font-bold uppercase tracking-widest">{availability ? 'Ready for Drive' : 'Reserved'}</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-[1400px] mx-auto px-6 py-12 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+
+          {/* Left: Image Showcase */}
+          <div className="lg:col-span-6">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="relative aspect-[4/5] bg-base-200 overflow-hidden rounded-2xl border border-base-content/5"
+            >
+              <img src={coverImage} alt={vehicleName} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" />
+
+              {/* কালার ১: Primary Badge */}
+              <div className="absolute top-10 left-10 bg-primary text-primary-content px-6 py-2 font-black text-xs uppercase tracking-[0.2em]">
+                {category}
               </div>
-              <p className="text-xl font-semibold text-green-400 mt-2 flex items-center">
-                <FaDollarSign className="mr-1 h-6 w-6" /> {pricePerDay} <span className="text-base text-gray-400 ml-1 font-normal">/ day</span>
-              </p>
-            </header>
 
-            <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-blue-400">Description</h2>
-              <p className="text-gray-300 leading-relaxed text-lg">{description}</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
-                <DetailItem icon={FaCar} label="Category" value={category} />
-                <DetailItem icon={FaMapMarkerAlt} label="Location" value={location} />
-                <DetailItem icon={FaUser} label="Owner" value={owner} />
-                <DetailItem icon={FaEnvelope} label="Contact Email" value={userEmail} isEmail={true} />
-                <DetailItem icon={FaCalendarAlt} label="Listed Since" value={formattedDate} />
-                <DetailItem icon={FaCar} label="Availability" value={availability ? 'Available' : 'Booked'} isAvailable={availability} />
+              <div className="absolute bottom-10 left-10">
+                <h1 className="text-5xl md:text-7xl font-black text-white uppercase leading-none tracking-tighter drop-shadow-2xl">
+                  {vehicleName}
+                </h1>
               </div>
-            </section>
+            </motion.div>
+          </div>
 
-            <div className="flex flex-col md:flex-row gap-2 mx-auto justify-center items-center pt-6 border-t border-white/10">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
-                <button
-                  onClick={handleAddBooking}
-                  disabled={bookingLoading || !availability}
-                  className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg font-bold text-lg bg-green-600 text-white hover:bg-green-700 transition duration-300 disabled:opacity-50"
-                >
-                  {bookingLoading ? 'Booking...' : 'Book Vehicle Now'}
-                </button>
-              </motion.div>
+          {/* Right: Info Dashboard */}
+          <div className="lg:col-span-6 flex flex-col justify-center space-y-10">
 
+            {/* কালার ২: Secondary (Price Block) */}
+            <div className="p-8 bg-secondary/5 border-l-4 border-secondary">
+              <span className="text-[11px] font-black text-secondary uppercase tracking-[0.5em]">Daily Subscription</span>
+              <div className="flex items-baseline gap-4 mt-2">
+                <h2 className="text-7xl font-black text-base-content tracking-tighter">${pricePerDay}</h2>
+                <span className="text-xl font-bold opacity-30 italic">/ 24h</span>
+              </div>
+            </div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
-                <Link to="/apps" className="flex items-center justify-center w-full px-8 py-4 rounded-xl shadow-lg font-bold text-lg border border-white/30 text-white transition duration-300 bg-white/10 hover:bg-white/20">
-                  Back to Fleet
-                </Link>
-              </motion.div>
+            {/* Description Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-primary">
+                <FiZap />
+                <h3 className="text-xs font-black uppercase tracking-widest">Specifications</h3>
+              </div>
+              <p className="text-lg text-base-content/60 leading-relaxed font-light">{description}</p>
+            </div>
+
+            {/* Status Grid (কালার ৩: Accent used for Icons & Labels) */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 bg-base-200/50 rounded-xl border border-base-content/5">
+                <FiMapPin className="text-accent mb-3 text-xl" />
+                <p className="text-[9px] font-black opacity-40 uppercase tracking-widest">Location</p>
+                <p className="font-bold text-sm uppercase">{location}</p>
+              </div>
+              <div className="p-6 bg-base-200/50 rounded-xl border border-base-content/5">
+                <FiStar className="text-accent mb-3 text-xl" />
+                <p className="text-[9px] font-black opacity-40 uppercase tracking-widest">Rating</p>
+                <p className="font-bold text-sm uppercase">{ratings} / 5.0</p>
+              </div>
+              <div className="p-6 bg-base-200/50 rounded-xl border border-base-content/5">
+                <FiUser className="text-accent mb-3 text-xl" />
+                <p className="text-[9px] font-black opacity-40 uppercase tracking-widest">Dealer</p>
+                <p className="font-bold text-sm uppercase truncate">{owner}</p>
+              </div>
+              <div className="p-6 bg-base-200/50 rounded-xl border border-base-content/5">
+                <FiShield className="text-accent mb-3 text-xl" />
+                <p className="text-[9px] font-black opacity-40 uppercase tracking-widest">Security</p>
+                <p className="font-bold text-sm uppercase">Full Insured</p>
+              </div>
+            </div>
+
+            {/* Action Block (কালার ১: Primary Button) */}
+            <div className="pt-4">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleAddBooking}
+                disabled={bookingLoading || !availability}
+                className="w-full h-20 bg-primary text-primary-content font-black text-xl uppercase tracking-[0.2em] shadow-xl disabled:opacity-20 transition-all flex items-center justify-center gap-4 group"
+              >
+                {bookingLoading ? <span className="loading loading-spinner"></span> : (
+                  <>
+                    Confirm Reservation
+                    <FiTruck className="group-hover:translate-x-4 transition-transform duration-500" />
+                  </>
+                )}
+              </motion.button>
+
+              {/* Accent decoration line */}
+              <div className="mt-10 flex items-center gap-4">
+                <div className="h-[2px] flex-grow bg-accent/20" />
+                <span className="text-[9px] font-black text-accent uppercase tracking-[0.4em] opacity-50 whitespace-nowrap">Premium Automotive Experience</span>
+                <div className="h-[2px] flex-grow bg-accent/20" />
+              </div>
             </div>
 
           </div>
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      </main>
     </div>
   );
 }
-
-const DetailItem = ({ icon: Icon, label, value, isAvailable, isEmail = false }) => (
-  <div className="flex items-center space-x-3 bg-gray-700/50 p-3 rounded-lg">
-    <Icon className={`h-5 w-5 ${isAvailable === true ? 'text-green-400' : isAvailable === false ? 'text-red-400' : 'text-blue-400'}`} />
-    <div>
-      <span className="text-sm font-medium text-gray-400">{label}:</span>
-      {isEmail ? <a href={`mailto:${value}`} className="block font-semibold text-white hover:underline transition">{value}</a> : <span className="block font-semibold text-white">{value}</span>}
-    </div>
-  </div>
-);
